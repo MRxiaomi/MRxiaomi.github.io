@@ -158,128 +158,61 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-first" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/03/first/">first</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/03/first/" class="archive-article-date">
-  	<time datetime="2017-09-03T09:27:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>历时一整个星期天下午，终于把个人博客搭建起来。以后这里就来记录自己学习的点点滴滴，也希望能把自己的所见所得分享给有需要的的旁友。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/03/first/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-thread-safety" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/03/thread-safety/">java线程安全的实现</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/03/thread-safety/" class="archive-article-date">
-  	<time datetime="2017-09-03T06:17:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-03</time>
-</a>
-        
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="java线程安全的实现"><a href="#java线程安全的实现" class="headerlink" title="java线程安全的实现"></a>java线程安全的实现</h1><h2 id="一、线程安全的概念"><a href="#一、线程安全的概念" class="headerlink" title="一、线程安全的概念"></a>一、线程安全的概念</h2><p>当多个线程访问一个对象时，如果不考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象就是线程安全的。<br>简单理解，要求代码本身封装了所有必要正确性保障手段（如互斥同步），令调用者无需关心线程问题，更无需采用任何措施来保障多线程的正确使用。</p>
-<p>举个简单的例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment">     * 对vector线程安全的测试</span></div><div class="line"><span class="comment">     */</span></div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Vector&lt;Integer&gt; vector = <span class="keyword">new</span> Vector&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (Thread.activeCount() &lt; <span class="number">20</span>) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">                vector.add(i);</div><div class="line">            &#125;</div><div class="line">            Thread thread1 = <span class="keyword">new</span> Thread(() -&gt; &#123;</div><div class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vector.size(); i++) &#123;</div><div class="line">                        vector.remove(i);</div><div class="line">                    &#125;</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            Thread thread2 = <span class="keyword">new</span> Thread(() -&gt; &#123;</div><div class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vector.size(); i++) &#123;</div><div class="line">                        System.out.println(vector.get(i));</div><div class="line">                    &#125;</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            thread1.start();</div><div class="line">            thread2.start();</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
-<p>很可能出现数组越界异常，原因是尽管Vector的get(),remove()，size()放法都是同步的，但是在多线程环境中，不做额外的同步措施的话，这段代码依然是不安全的。</p>
-<p>我的理解是，在代码里先判断再执行了删除和操作，很有可能在thread2线程获取size()之后，thread1线程删除掉最后一个元素，这样thread2再去获取最后一个元素的时候，就会出现ArrayndexOutOfSountException.</p>
-<p>这段代码正确的实现方式应该是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment">     * 对vector线程安全的测试</span></div><div class="line"><span class="comment">     */</span></div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Vector&lt;Integer&gt; vector = <span class="keyword">new</span> Vector&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">while</span> (Thread.activeCount() &lt; <span class="number">20</span>) &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">                vector.add(i);</div><div class="line">            &#125;</div><div class="line">            Thread thread1 = <span class="keyword">new</span> Thread(() -&gt; &#123;</div><div class="line">                <span class="keyword">synchronized</span> (vector) &#123;</div><div class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vector.size(); i++) &#123;</div><div class="line">                        vector.remove(i);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            Thread thread2 = <span class="keyword">new</span> Thread(() -&gt; &#123;</div><div class="line">                <span class="keyword">synchronized</span> (vector) &#123;</div><div class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vector.size(); i++) &#123;</div><div class="line">                        System.out.println(vector.get(i));</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            thread1.start();</div><div class="line">            thread2.start();</div><div class="line">        &#125;</div></pre></td></tr></table></figure></p>
-<p>结论：这里的Vector并不是绝对线程安全的，必须加入同步以保证vector访问的线程安全性。</p>
-<p>造成线程安全问题的主要诱因有两点:</p>
-<ul>
-<li>存在共享数据，</li>
-<li>存在多条线程共同操作共享数据。</li>
+        <hr>
+<p>title: java线程安全的实现<br>date: 2017-09-03 14:17:28<br>tags:<br>大家好，今天我来給大家分享一下java中的锁机制<br>（sychronized&amp;Lock）。这两种锁机制都是为了保障我们的大码是线程安全的。那么我们先来简单了解一下线程安全方面的概念。</p>
+<h2 id="一、线程安全的概念"><a href="#一、线程安全的概念" class="headerlink" title="一、线程安全的概念"></a>一、线程安全的概念</h2><p>线程安全是什么呢？</p>
+<blockquote>
+<p>当多个线程访问一个对象时，如果不考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象就是线程安全的。</p>
+</blockquote>
+<p>概念很抽象，简单来说，就是不需要调用方进行其他协调操作，程序运行的结果都是正确的，那么这个对象就是线程安全的。</p>
+<p>还是很抽象？举个例子吧</p>
+<p>我们听到果Vector这个集合类是线程安全的，那么它再任何情况下都是线程安全的吗？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">if(vector.size())&#123;</div><div class="line">    vector.get();</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>那么这种情况还是线程安全的吗？</p>
+<p>其实不是的，虽然vector所有方法加上了sychronized，但对于复合操作，Vector 仍然需要进行同步处理。 </p>
+<p>因此，vector尽量不要使用，synchronize过多会有额外的开销，引起性能下降。</p>
+<p>总结：上面的例子就不是线程安全的，因为它还需要我们进行额外的同步措施，比如加锁。</p>
+<h2 id="二、java中线程安全的实现"><a href="#二、java中线程安全的实现" class="headerlink" title="二、java中线程安全的实现"></a>二、java中线程安全的实现</h2><p><img src="http://upload-images.jianshu.io/upload_images/4739169-00f5297edb66b081.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>图中提到了悲观锁和乐观锁，那么我了解下乐观下锁和悲观加锁的概念；</p>
+<blockquote>
+<p>乐观锁；先进行操作，如果没有其他线程征用共享数据，那操作就成功了，如果共享数据有争用，产生了冲突，就在采取其他的补偿措施（无限重试）</p>
+<p>悲观锁:如果其他线程已经占用了共享数据，就把线程挂起，进行阻塞。</p>
+</blockquote>
+<p>由于本章讲述的重点是sychronized和Lock锁，我们只简单的提一下非阻塞同步和无同步方案两种策略</p>
+<h3 id="1-非阻塞同步"><a href="#1-非阻塞同步" class="headerlink" title="1.非阻塞同步"></a>1.非阻塞同步</h3><p>Compare and Swap，比较并操作，CPU指令，CAS的语义是“我认为V的值应该为A，如果是，那么将V的值更新为B，否则不修改并告诉V的值实际为多少”</p>
+<p>在java中，Unsafe类的的compareAndSwapInt()和compareAndSwapLong()包装提供，但是只能通过API间接使用它，通过J.U.C包下的原子类等。</p>
+<p>虽然可能会出现ABA问题，但是这种问题不会影响数据结果，对我们的影响很小。</p>
+<h3 id="2-无同步方案"><a href="#2-无同步方案" class="headerlink" title="2.无同步方案"></a>2.无同步方案</h3><ul>
+<li><strong>可重入代码</strong><br>如果是一个方法，返回的结果是可以预测的话，只要输入了相同的数据，都能返回相同的结果。那么就是可重入的，当然也是线程安全的</li>
 </ul>
-<p>如果一段代码根本不会和其他线程共享数据，那么，从线程安全的角度来讲的话，那么程序是串行的还是多线程执行的完全没有区别</p>
-<h2 id="二、线程安全的实现方式"><a href="#二、线程安全的实现方式" class="headerlink" title="二、线程安全的实现方式"></a>二、线程安全的实现方式</h2><h3 id="互斥同步"><a href="#互斥同步" class="headerlink" title="互斥同步"></a>互斥同步</h3><p>互斥同步是一种常见的并发性保障手段</p>
-<p>互斥和同步的区别：</p>
-<pre><code> 同步：指在多个线程并发访问共享数据时，保证共享数据在统一时刻只被一个（或者是一些，使用信号量的时候）线程使用。
-
-互斥：是实现同步的一种手段，临界区，互斥量，信号量都是主要的互斥实现方式。
-</code></pre><p>互斥是因，同步是果，互斥是方法，同步是目的。</p>
-<p>那么java中是如何保障线程安全的呢？</p>
-<h4 id="synchronzed关键字"><a href="#synchronzed关键字" class="headerlink" title="synchronzed关键字"></a>synchronzed关键字</h4><h5 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h5><p>java提供一种内置的锁机制来支持原子性，同步代码块包括两部分，一个作为锁对象的引用，一个作为由这个锁对象保护的代码块。</p>
-<p>最基本的同步方式，有三种用法：</p>
 <ul>
-<li>修饰实例方法，作用于当前实例加锁，进入同步代码前要获得当前实例的锁<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">public class AccountingSyncBad implements Runnable&#123;</div><div class="line">    static int i=0;</div><div class="line"></div><div class="line">    public synchronized void increase()&#123;</div><div class="line">        i++;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        for(int j=0;j&lt;1000000;j++)&#123;</div><div class="line">            increase();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String[] args) throws InterruptedException &#123;</div><div class="line">        AccountingSyncBad instance = new AccountingSyncBad();</div><div class="line"></div><div class="line">        Thread t1=new Thread(instance);</div><div class="line">        Thread t2=new Thread(instance);</div><div class="line"></div><div class="line">        t1.start();</div><div class="line">        t2.start();</div><div class="line"></div><div class="line">        t1.join();</div><div class="line">        t2.join();</div><div class="line">        System.out.println(i);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
+<li><strong>线程本地存储</strong><br>如果一段代码必须与另一段代码共享数据，但不希望被多线程共享，那么可以把共享数据限制再一个线程内，比如在java中，一个共享数据要呗多线程访问，可以声明为velotile,如果线程独享，可以使用ThreadLocal类。</li>
 </ul>
-<p>上面代码始终输出：2000000</p>
-<p>分析：由于i++不具备原子性（具体原因不在本节讨论），依靠synchronized保证线程安全。否则很可能看到小于2000000的结果。</p>
+<h3 id="3-互斥同步"><a href="#3-互斥同步" class="headerlink" title="3.互斥同步"></a>3.互斥同步</h3><p>互斥和同步是两个不一样的概念，我们要理解一下</p>
+<blockquote>
+<p>同步：指在多个线程并发访问共享数据时，保证共享数据在统一时刻只被一个（或者是一些，使用信号量的时候）线程使用。</p>
+<p>互斥：是实现同步的一种手段，临界区，互斥量，信号量都是主要的互斥实现方式。</p>
+</blockquote>
+<p>可以说是因为互斥，会造成同步的结果，达到互斥的目的</p>
+<p>1)sychronized<br>java提供一种内置的锁机制来支持原子性，同步代码块包括两部分，一个作为锁对象的引用，一个作为由这个锁对象保护的代码块。首先讲一下sychronized关键字的基本用法吧。</p>
+<ul>
+<li>修饰实例方法，作用于当前实例加锁，进入同步代码前要获得当前实例的锁</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">static int i=0; </div><div class="line"></div><div class="line">synchronized void increase()&#123;</div><div class="line">    i++;//由于i++不具备原子性，因此依靠synchronized保证线程安全。否则很可能看到小于2000000的结果</div><div class="line">&#125;</div><div class="line"></div><div class="line">run() &#123;</div><div class="line">    for(...)&#123;</div><div class="line">        increase();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">main()&#123;</div><div class="line">    A a = new A();</div><div class="line">    Thread t1=new Thread(a);</div><div class="line">    Thread t2=new Thread(a);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>如果获取的锁不是同一个对象，而是两个不同的对象，会出现两种情形：</p>
 <p>1）两个线程操作的不是共享数据，那么线程安全有保障</p>
 <p>2）两个线程操作的是共享数据，那么可能就会出现下面的问题：</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">public class AccountingSyncBad implements Runnable&#123;</div><div class="line">    static int i=0;</div><div class="line"></div><div class="line">    public synchronized void increase()&#123;</div><div class="line">        i++;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        for(int j=0;j&lt;1000000;j++)&#123;</div><div class="line">            increase();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String[] args) throws InterruptedException &#123;</div><div class="line">        Thread t1=new Thread(new AccountingSyncBad());</div><div class="line">        Thread t2=new Thread(new AccountingSyncBad());</div><div class="line"></div><div class="line">        t1.start();</div><div class="line">        t2.start();</div><div class="line"></div><div class="line">        t1.join();</div><div class="line">        t2.join();</div><div class="line">        System.out.println(i);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p> 该代码有严重线程安全问题，结果极有可能小于200000。两个线程虽然都会进入同步方法，但是却分别获取不了不同对象锁，而且操作的是共享数据。避免这种情况是使用修饰静态方法的方式加锁，因为该类对象只有一个，对象锁唯一，因此可以使用这种方式保护静态成员。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">static int i=0; </div><div class="line"></div><div class="line">synchronized void increase()&#123;</div><div class="line">    i++;//该代码有严重线程安全问题，结果极有可能小于200000。两个线程虽然都会进入同步方法，但是却分别获取不了不同对象锁，而且操作的是共享数据</div><div class="line">&#125;</div><div class="line"></div><div class="line">run() &#123;</div><div class="line">    for(...)&#123;</div><div class="line">        increase();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">main()&#123;</div><div class="line">    Thread t1=new Thread(new A());</div><div class="line">    Thread t2=new Thread(new B());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以利用修饰静态方法解决该问题</p>
 <ul>
-<li>修饰静态方法，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁</li>
-</ul>
-<p>锁住的是当前class对象，线程a调用静态synchronized方法和线程b调用非静态synchronized方法，是允许的。因为占用的锁对象不同，因此，如果修饰其他线程调用increase4Obj的话，就可能出现线程安全问题。</p>
-<p>比如下面的代码：<br><img src="https://upload-images.jianshu.io/upload_images/4739169-dced2f3528ae7cbe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"></p>
-<ul>
-<li><p>修饰代码块，指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁<br>好处：如果方法体比较长，可以提高性能。可以有三种方式</p>
+<li><p>修饰静态方法，作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">static int i=0; </div><div class="line"></div><div class="line">synchronized static void increase()&#123;</div><div class="line">    i++;//因为该类对象只有一个，对象锁唯一，因此可以使用这种方式保护静态成员</div><div class="line">&#125;</div><div class="line"></div><div class="line">synchronized void increase4Ob()&#123;</div><div class="line">    i++;//但是其他线程可以调用非synchronized方法，同时操作共享数据。只能避免提供这样的方法</div><div class="line">&#125;</div><div class="line"></div><div class="line">run() &#123;</div><div class="line">    for(...)&#123;</div><div class="line">        increase();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">main()&#123;</div><div class="line">    Thread t1=new Thread(new A());</div><div class="line">    Thread t2=new Thread(new B());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>修饰代码块，指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁</p>
 <ul>
 <li><p>实例对象，获取的是指定的实例对象锁</p>
 </li>
@@ -290,44 +223,86 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">  public class AccountingSync implements Runnable&#123;</div><div class="line">    static AccountingSync instance=new AccountingSync();</div><div class="line">    static int i=0;</div><div class="line">    @Override</div><div class="line">    public void run() &#123;</div><div class="line">        //省略其他耗时操作....</div><div class="line">        //使用同步代码块对变量i进行同步操作,锁对象为instance</div><div class="line">        synchronized(instance)&#123;</div><div class="line">            for(int j=0;j&lt;1000000;j++)&#123;</div><div class="line">                i++;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">  //        synchronized(this)&#123;//</div><div class="line">  //            for(int j=0;j&lt;1000000;j++)&#123;</div><div class="line">  //                i++;</div><div class="line">  //            &#125;</div><div class="line">  //        &#125;</div><div class="line">  //        synchronized(AccountingSync.class)&#123;</div><div class="line">  //            for(int j=0;j&lt;1000000;j++)&#123;</div><div class="line">  //                i++;</div><div class="line">  //            &#125;</div><div class="line">  //        &#125;</div><div class="line">    &#125;</div><div class="line">    public static void main(String[] args) throws InterruptedException &#123;</div><div class="line">        Thread t1=new Thread(instance);</div><div class="line">        Thread t2=new Thread(instance);</div><div class="line">        t1.start();t2.start();</div><div class="line">        t1.join();t2.join();</div><div class="line">        System.out.println(i);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h5 id="synchronized底层语义原理"><a href="#synchronized底层语义原理" class="headerlink" title="synchronized底层语义原理"></a>synchronized底层语义原理</h5><p>上面所说的三种加锁情况，前两种是是方法级别的同步，方法级的同步是隐式，无需通过字节码来控制   </p>
-<p>第三种是是代码块的同步，同步一段指令集序列通常是由Java 语言中的synchronized块来表示的，Java虚拟机的 指令集中有monitorenter和monitorexit两条指令来支持synchronized关键字的语义,可以使用javap进行查看字节码指令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">public class com.example.demo.Demo2 &#123;</div><div class="line">  public com.example.demo.Demo2();</div><div class="line">    Code:</div><div class="line">       0: aload_0</div><div class="line">       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</div><div class="line">       4: return</div><div class="line"></div><div class="line">  public void demo1();</div><div class="line">    Code:</div><div class="line">       0: ldc           #2                  // String s</div><div class="line">       2: astore_1</div><div class="line">       3: aload_1</div><div class="line">       4: dup</div><div class="line">       5: astore_2</div><div class="line">       6: monitorenter</div><div class="line">       7: aload_0</div><div class="line">       8: invokespecial #3                  // Method doSomething:()V</div><div class="line">      11: aload_2</div><div class="line">      12: monitorexit</div><div class="line">      13: goto          21</div><div class="line">      16: astore_3</div><div class="line">      17: aload_2</div><div class="line">      18: monitorexit</div><div class="line">      19: aload_3</div><div class="line">      20: athrow</div><div class="line">      21: return</div><div class="line">    Exception table:</div><div class="line">       from    to  target type</div><div class="line">           7    13    16   any</div><div class="line">          16    19    16   any</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>java虚拟机规范对于该指令的解释如下：<br><img src="https://upload-images.jianshu.io/upload_images/4739169-3a011b72d232ec9c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"><br>monitorexit指令类似，就不再多做描述。</p>
-<p>总结：</p>
+<p>那么synchronized到底是什么，通过javap可以查看到sychronized对应了两条虚拟机指令monitorenter和monitorexit。</p>
+<p>java虚拟机规范有对它的描述，我就简单概括一下：</p>
+<p><strong>monitorenter</strong></p>
 <ul>
-<li><p>synchronized锁的是什么？<br> 锁的是对象关联的monitor（monitor是由ObjectMonitor实现的）,每个对象都存在一个monitor与之关联，对象与其monitor有多种关联方式，不同虚拟机有不同的实现：</p>
+<li>每个对象都关联了一个monitor</li>
+<li>需要一个reference类型数据</li>
+<li>被线程持有时锁定reference类型参数</li>
+<li>进入计数器获取monitor所有权</li>
+<li>进入计数器累加</li>
+</ul>
+<p><strong>monitorenter</strong></p>
 <ul>
-<li><p>monitor与对象一起创建销毁</p>
+<li>进入计数器递减</li>
+<li>进入计数器释放monitor所有权</li>
+</ul>
+<p>总结：<br>1.锁的是对象的，monitor可以理解为对象的一部分</p>
+<p>2.sychronized是可重入锁</p>
+<p>重入锁的概念：</p>
+<blockquote>
+<p>所谓重入锁，指的是以线程为单位，当一个线程获取对象锁之后，这个线程可以再次获取本对象上的锁，而其他的线程是不可以的</p>
+</blockquote>
+<p>不难理解，重入锁可以避免程序发生死锁。</p>
+<p>sychronized的底层数据结构</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4739169-a8b3511a869a8968.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>1.多个线程竞争锁，先自旋获取锁，若成功，就成为owner，若失败使用CAS操作竞争锁。若成功，将next节点指向剩余队列</p>
+<pre><code>设计为LIFO好处：减少出队阻塞带来的性能消耗；避免出队列的时间?
+</code></pre><p>6.ower线程释放锁，如果EntryList为null，ContentionList不为null，就会从ContentionList末尾取出一个线程，放入EntryList,标记EntryList其中一个线程为Successor,这个Successor接下来会进入spin状态尝试获取锁.如果获取成功，则成为owner，否则，回到EntryList中</p>
+<ul>
+<li><p>EntryList为双向队列</p>
 </li>
-<li><p>当线程试图获取对象锁时自动生成</p>
+<li><p>一般是头节点，这个EntryList的大小可能大于一，一般在notify时</p>
 </li>
 </ul>
-</li>
-</ul>
-<p>如何关联monitor稍后会讲。</p>
+<p>这种利用两个队列减少争用的算法，可以参考： Michael Scott’s “2Q” algorithm </p>
+<p>接下来，进入我们的正题，wait方法。如果一个线程成为owner后，执行了wait方法，则会进入waitSet。</p>
+<p>好了sychronized的基本数据结构我们也大概了解了，其实就是自旋+LIFO队列+2Q的算法等等</p>
+<p>这里是通过线程阻塞和唤醒的操作实现的虚拟队列，跟ReetriantLock类似。</p>
+<p>接下来看看Lock锁的实现原理</p>
+<p>2)Lock<br>是1.5出现的，由于sychronized同步是不错，但它并不完美。它有一些功能性的限制。</p>
 <ul>
-<li>synchronized是可重入锁</li>
+<li>A线程获取了锁，B线程必须等待，A只有再以下两种情况释放锁：</li>
 </ul>
-<p>比如线程 A、B。对象 Foo 有同步方法 M、N。线程 A 首先执行同步方法 M 时就会获取对象锁，此时 B 不能执行同一把对象锁修饰的方法 M、N，但可以访问其他没有非sychroniaze方法，除非 A 释放锁。</p>
-<p>又因为锁是可重入的，所以 A 可以继续执行 M，N 方法。可重入锁一定程度上避免了死锁的问题，内部是关联一个计数器，加一次锁计数器值加一，为零时释放锁。</p>
-<p><strong>如何理解锁是对象？这需要了解jvm对于锁的实现，以及对象的结构。</strong><br>每个 Java Object 在 JVM 内部都有一个 native 的 C++ 对象 oop/oopDesc 与之对应<br><img src="https://upload-images.jianshu.io/upload_images/4739169-e72081828a2b3c62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"><br><strong>Mark Word</strong>：与自身数据无关的额外存储成本，数据的长度在32位和64位虚拟机（未开启压缩指针）中分别为32bit和64bit。考虑到空间的效率Mark Word被涉及成了一个非固定数据结构，以便在足够小的空间存储尽量多的信息，他会根据对象的不同状态复用自己的空间。Mark Word 它是实现轻量级锁和偏向锁的关键</p>
-<p><strong>实例数据</strong>：存储的是真正有效数据，如各种字段内容，各字段的分配策略为longs/doubles、ints、shorts/chars、bytes/boolean、oops(ordinary object pointers)，相同宽度的字段总是被分配到一起，便于之后取数据。父类定义的变量会出现在子类前面。</p>
-<p><strong>对齐填充</strong>：部分仅仅起到占位符的作用，并非必须。</p>
-<p>下面是hotSpot对象头的Mark Word：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/4739169-df501ab54ff1b0b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"></p>
-<p>其中轻量级锁和偏向锁是jdk1.6对synchronized进行优化后新增的<br>。后面我们在讲锁优化的时候在进行分析。</p>
-<p>为什么引入这么多种类的锁，原因是为了某些情况下没有必要加重量级别的锁，如没有多线程竞争，减少传统的重量级锁产生的性能消耗。</p>
-<p>其中重量锁就是操作系统的互斥锁来实现的。</p>
-<p><strong>线程是如何获取对象的monitor锁的呢？</strong><br>现在我们分析以下synchronized也就是传统重量级锁的实现方式，也就是锁标志为10，其中指针指向的是Monitor（管程或监视器锁）对象的的其实地址。每个对象都存在一个monitor与之关联，对象与其monitor有多种关联方式，不同虚拟机有不同的实现：</p>
+<p>　　1）获取锁的线程执行完了该代码块，然后线程释放对锁的占有；</p>
+<p>　　2）线程执行发生异常，此时JVM会让线程自动释放锁。</p>
+<p>　　那么如果这个获取锁的线程由于要等待IO或者其他原因（比如调用sleep方法）被阻塞了，但是又没有释放锁，其他线程便只能干巴巴地等待，试想一下，这多么影响程序执行效率。</p>
+<p>　　因此就需要有一种机制可以不让等待的线程一直无期限地等待下去（比如只等待一定的时间或者能够响应中断），通过Lock就可以办到。
+　　</p>
 <ul>
-<li><p>monitor与对象一起创建销毁</p>
-</li>
-<li><p>当线程试图获取对象锁时自动生成</p>
-</li>
+<li>A线程读，B线程写，读和读不应该同步：</li>
 </ul>
-<p>此处包含monitor的数据结构和获取锁的过程</p>
-<p>与重量级锁对应的就是java的轻量级锁，接下来我们讲一讲锁优化相关的内容</p>
+<p>　　但是采用synchronized关键字来实现同步的话，就会导致一个问题：</p>
+<p>　　如果多个线程都只是进行读操作，所以当一个线程在进行读操作时，其他线程只能等待无法进行读操作。</p>
+<p>　　因此就需要一种机制来使得多个线程都只是进行读操作时，线程之间不会发生冲突，通过Lock就可以办到。</p>
+<p>那么我们先看看具体提供了哪些功能</p>
+<p>拥有Synchronized相同的互斥性和内存可见性语义，<br>此外还多了锁投票，定时锁等候和中断锁等候，公平或不公平锁；同时，Lock对应的Condition也比wait/notify要方便的多、灵活的多。<br>1、ReentrantLock</p>
+<p>ReentrantLock，意思是“可重入锁”，关于可重入锁的概念在下一节讲述。ReentrantLock是唯一实现了Lock接口的类，并且ReentrantLock提供了更多的方法。</p>
+<p>三种加锁方法：<br>a) lock(), 如果获取了锁立即返回，如果别的线程持有锁，当前线程则一直处于休眠状态，直到获取锁<br>b) tryLock(), 如果获取了锁立即返回true，如果别的线程正持有锁，立即返回false；<br>c)tryLock(long timeout,TimeUnit unit)， 如果获取了锁定立即返回true，如果别的线程正持有锁，会等待参数给定的时间，在等待的过程中，如果获取了锁定，就返回true，如果等待超时，返回false；<br>d) lockInterruptibly:如果获取了锁定立即返回，如果没有获取锁定，当前线程处于休眠状态，直到或者锁定，或者当前线程A被别的线程中断B.interrupt()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public void f() throws InterruptedExceptio</div><div class="line">    lock.lockInterruptibly(); //注意，如果需要正确中断等待锁的线程，必须将获取锁放在外面，然后将InterruptedException抛出</div><div class="line">    //lock需要声明为类属性，否则每个方法都会新建一个lock对象</div><div class="line">    try &#123;  </div><div class="line">     //.....</div><div class="line">    &#125;</div><div class="line">    finally &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>ReadWriteLock也是一个接口，在它里面只定义了两个方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Lock readLock();</div><div class="line">Lock writeLock();</div></pre></td></tr></table></figure></p>
+<p>举个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();</div><div class="line"></div><div class="line">read()&#123;</div><div class="line">    rwl.readLock().lock()</div><div class="line">&#125;</div><div class="line">write()&#123;</div><div class="line">    rwl.writeLock().lock()</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure></p>
+<p>那么Lock锁的实现原理是什么?<br>Lock完全用Java写成，在java这个层面是无关JVM实现的。其实现都依赖java.util.concurrent.AbstractQueuedSynchronizer类，实现思路都大同小异，因此我们以ReentrantLock作为讲解切入点</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4739169-395d59292387f097.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>AbstractQueuedSynchronizer中实现了绝大多数Lock的功能（模版模式），而只把tryAcquire方法延迟到子类中实现。无论是否或得锁都往下执行</p>
+<p>我们也来看下它的数据结构<br><img src="http://upload-images.jianshu.io/upload_images/4739169-cea4ededd5ee2cea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<ul>
+<li>阻塞的CLH队列（LockSupport.park()，HotSpot在Linux中中通过调用pthread_mutex_lock函数把线程交给系统内核进行阻塞）</li>
+<li>虚拟队列-不存在队列实例，仅存在节点之间的前后关系（同synchronized）</li>
+<li>加入队列阻塞前加锁CAS操作（synchronized为自旋）</li>
+<li>已经存在Running线程，则新的竞争线程会被追加到队尾，具体是采用基于CAS（同synchronized））</li>
+</ul>
+<p>常见概念：</p>
+<p><strong>公平锁和非公平锁：</strong></p>
+<p>在公平的锁上，线程按照他们发出请求的顺序获取锁，但在非公平锁上，则允许‘插队’：当一个线程请求非公平锁时，如果在发出请求的同时该锁变成可用状态，那么这个线程会跳过队列中所有的等待线程而获得锁。非公平的ReentrantLock 并不提倡 插队行为，但是无法防止某个线程在合适的时候进行插队。</p>
+<p>非公平锁性能高于公平锁性能的原因：</p>
+<p>在恢复一个被挂起的线程与该线程真正运行之间存在着严重的延迟。</p>
+<p>假设线程A持有一个锁，并且线程B请求这个锁。由于锁被A持有，因此B将被挂起。当A释放锁时，B将被唤醒，因此B会再次尝试获取这个锁。与此同时，如果线程C也请求这个锁，那么C很可能会在B被完全唤醒之前获得、使用以及释放这个锁。这样就是一种双赢的局面：B获得锁的时刻并没有推迟，C更早的获得了锁，并且吞吐量也提高了。</p>
+<p>当持有锁的时间相对较长或者请求锁的平均时间间隔较长，应该使用公平锁。在这些情况下，插队带来的吞吐量提升（当锁处于可用状态时，线程却还处于被唤醒的过程中）可能不会出现。</p>
+<p><strong>并发（concurrency）和并行（parallellism）是：</strong></p>
+<p>解释一：并行是指两个或者多个事件在同一时刻发生；而并发是指两个或多个事件在同一时间间隔发生。<br>解释二：并行是在不同实体上的多个事件，并发是在同一实体上的多个事件。<br>解释三：在一台处理器上“同时”处理多个任务，在多台处理器上同时处理多个任务。如hadoop分布式集群<br>所以并发编程的目标是充分的利用处理器的每一个核，以达到最高的处理性能。</p>
+<p><strong> 内核态和用户态 </strong><br>内核态: CPU可以访问内存所有数据, 包括外围设备, 例如硬盘, 网卡. CPU也可以将自己从一个程序切换到另一个程序</p>
+<p>用户态: 只能受限的访问内存, 且不允许访问外围设备. 占用CPU的能力被剥夺, CPU资源可以被其他程序获取</p>
 <h4 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h4><p>由于锁优化是针对synchronized的重量级锁的优化（个人认为），因此放在这里讲解。</p>
 <h5 id="自旋锁与自适应自旋锁-JDK1-4-2"><a href="#自旋锁与自适应自旋锁-JDK1-4-2" class="headerlink" title="自旋锁与自适应自旋锁(JDK1.4.2)"></a>自旋锁与自适应自旋锁(JDK1.4.2)</h5><p>目的：提高性能（互斥同步对性能最大的影响是阻塞的实现，挂起线程和回复线程的操作都需要转入内核态进行完成）<br>原理：一般来说，共享数据的锁定只会持续很短的一段时间，为了这段时间去挂机和恢复线程不值得。如果物理机器上有一个以上的处理器，我们可以让后面请求锁的那个线程等待一下，但不放弃处理器的时间（自旋）。不能代替阻塞。</p>
 <p>虚拟机参数：-XX:+UseSpinning(1.6默认开启)</p>
@@ -354,7 +329,14 @@
 <li>没有竞争的情况下，频繁的互斥同步操作也会导致不必要的性能损耗，</li>
 </ol>
 <p>因此，锁粗化会将加锁的同步范围扩展到整个操作序列的外部</p>
-<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>作用：并不是用来代替重量级锁的，他的本意是在没有读线程竞争的情况下，减少传统的重量级锁使用操作系统互斥量产生的性能损耗。</p>
+<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><p>作用：并不是用来代替重量级锁的，他的本意是在没有读线程竞争的情况下，减少传统的重量级锁使用操作系统互斥量产生的性能损耗。<br><strong>如何理解锁是对象？这需要了解jvm对于锁的实现，以及对象的结构。（其实可以放在轻量级锁的部分讲）</strong><br>每个 Java Object 在 JVM 内部都有一个 native 的 C++ 对象 oop/oopDesc 与之对应<br><img src="https://upload-images.jianshu.io/upload_images/4739169-e72081828a2b3c62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"><br><strong>Mark Word</strong>：与自身数据无关的额外存储成本，数据的长度在32位和64位虚拟机（未开启压缩指针）中分别为32bit和64bit。考虑到空间的效率Mark Word被涉及成了一个非固定数据结构，以便在足够小的空间存储尽量多的信息，他会根据对象的不同状态复用自己的空间。Mark Word 它是实现轻量级锁和偏向锁的关键</p>
+<p><strong>实例数据</strong>：存储的是真正有效数据，如各种字段内容，各字段的分配策略为longs/doubles、ints、shorts/chars、bytes/boolean、oops(ordinary object pointers)，相同宽度的字段总是被分配到一起，便于之后取数据。父类定义的变量会出现在子类前面。</p>
+<p><strong>对齐填充</strong>：部分仅仅起到占位符的作用，并非必须。</p>
+<p>下面是hotSpot对象头的Mark Word：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/4739169-df501ab54ff1b0b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"></p>
+<p>其中轻量级锁和偏向锁是jdk1.6对synchronized进行优化后新增的<br>。后面我们在讲锁优化的时候在进行分析。</p>
+<p>为什么引入这么多种类的锁，原因是为了某些情况下没有必要加重量级别的锁，如没有多线程竞争，减少传统的重量级锁产生的性能消耗。</p>
+<p>其中重量锁就是操作系统的互斥锁来实现的。</p>
 <p>上面已经讲解了内存布局的基本概念。</p>
 <p>轻量级锁的实现步骤：</p>
 <ol>
@@ -391,7 +373,70 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/03/thread-safety/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/09/04/thread-safety/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-first" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/03/first/">first</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/03/first/" class="archive-article-date">
+  	<time datetime="2017-09-03T09:27:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>历时一整个星期天下午，终于把个人博客搭建起来。以后这里就来记录自己学习的点点滴滴，也希望能把自己的所见所得分享给有需要的的旁友。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/03/first/">展开全文 >></a>
         </p>
       
 
