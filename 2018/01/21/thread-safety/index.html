@@ -8,13 +8,14 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>java线程安全的实现 | 刘雨蒙的个人站</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="大家好，今天我来給大家分享一下java中的锁机制（sychronized&amp;amp;Lock）。这两种锁机制都是为了保障我们的大码是线程安全的。那么我们先来简单了解一下线程安全方面的概念。 一、线程安全的概念线程安全是什么呢？">
+  <meta name="description" content="給大家分享一下java中的锁机制（sychronized&amp;amp;Lock）。这两种锁机制都是为了保障我们的代码是线程安全的。我们先来简单了解一下线程安全方面的概念。 一、线程安全的概念线程安全是什么呢？  当多个线程访问一个对象时，如果不考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象就是线">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java线程安全的实现">
 <meta property="og:url" content="http://yoursite.com/2018/01/21/thread-safety/index.html">
 <meta property="og:site_name" content="刘雨蒙的个人站">
-<meta property="og:description" content="大家好，今天我来給大家分享一下java中的锁机制（sychronized&amp;amp;Lock）。这两种锁机制都是为了保障我们的大码是线程安全的。那么我们先来简单了解一下线程安全方面的概念。 一、线程安全的概念线程安全是什么呢？">
+<meta property="og:description" content="給大家分享一下java中的锁机制（sychronized&amp;amp;Lock）。这两种锁机制都是为了保障我们的代码是线程安全的。我们先来简单了解一下线程安全方面的概念。 一、线程安全的概念线程安全是什么呢？  当多个线程访问一个对象时，如果不考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象就是线">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-00f5297edb66b081.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/4739169-3a011b72d232ec9c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-a8b3511a869a8968.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-395d59292387f097.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-cea4ededd5ee2cea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
@@ -23,10 +24,10 @@
 <meta property="og:image" content="http://images2015.cnblogs.com/blog/820406/201604/820406-20160424105442866-2111954866.png">
 <meta property="og:image" content="http://images2015.cnblogs.com/blog/820406/201604/820406-20160424105540163-1019388398.png">
 <meta property="og:image" content="http://images2015.cnblogs.com/blog/820406/201604/820406-20160424163618101-624122079.png">
-<meta property="og:updated_time" content="2018-01-25T10:05:27.000Z">
+<meta property="og:updated_time" content="2018-01-25T12:22:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java线程安全的实现">
-<meta name="twitter:description" content="大家好，今天我来給大家分享一下java中的锁机制（sychronized&amp;amp;Lock）。这两种锁机制都是为了保障我们的大码是线程安全的。那么我们先来简单了解一下线程安全方面的概念。 一、线程安全的概念线程安全是什么呢？">
+<meta name="twitter:description" content="給大家分享一下java中的锁机制（sychronized&amp;amp;Lock）。这两种锁机制都是为了保障我们的代码是线程安全的。我们先来简单了解一下线程安全方面的概念。 一、线程安全的概念线程安全是什么呢？  当多个线程访问一个对象时，如果不考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象就是线">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4739169-00f5297edb66b081.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="刘雨蒙的个人站" type="application/atom+xml">
@@ -187,9 +188,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>大家好，今天我来給大家分享一下java中的锁机制<br>（sychronized&amp;Lock）。这两种锁机制都是为了保障我们的大码是线程安全的。那么我们先来简单了解一下线程安全方面的概念。</p>
+        <p>給大家分享一下java中的锁机制<br>（sychronized&amp;Lock）。这两种锁机制都是为了保障我们的代码是线程安全的。我们先来简单了解一下线程安全方面的概念。</p>
 <h2 id="一、线程安全的概念"><a href="#一、线程安全的概念" class="headerlink" title="一、线程安全的概念"></a>一、线程安全的概念</h2><p>线程安全是什么呢？</p>
-<a id="more"></a>
 <blockquote>
 <p>当多个线程访问一个对象时，如果不考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象就是线程安全的。</p>
 </blockquote>
@@ -211,13 +211,14 @@
 <p>在java中，Unsafe类的的compareAndSwapInt()和compareAndSwapLong()包装提供,这类方法主要是通过JNI的native方法，通过调用使用操作系统的库函数调用本地方法，从而实现系统调用。但是只能通过API间接使用它，通过J.U.C包下的原子类等。</p>
 <p>虽然可能会出现ABA问题，但是这种问题不会影响数据结果，对我们的影响很小。</p>
 <h3 id="2-无同步方案"><a href="#2-无同步方案" class="headerlink" title="2.无同步方案"></a>2.无同步方案</h3><ul>
-<li><p><strong>可重入代码</strong><br>如果是一个方法，返回的结果是可以预测的话，只要输入了相同的数据，都能返回相同的结果。那么就是可重入的，当然也是线程安全的</p>
-<p>可重入函数主要用于多任务环境中，一个可重入的函数简单来说就是可以<strong>被中断</strong>的函数，也就是说，可以在这个函数执行的任何时刻中断它，转入OS调度下去执行另外一段代码，而返回控制时不会出现什么错误；而不可重入的函数由于使用了一些<strong>系统资源</strong>，比如全局变量区，中断向量表等，所以它如果被中断的话，可能会出现问题，这类函数是不能运行在多任务环境下的。</p>
-<p>可重入函数也可以这样理解，重入即表示<strong>重复进入</strong>，首先它意味着这个<strong>函数可以被中断</strong>，其次意味着它<strong>除了使用自己栈上的变量以外不依赖于任何环境</strong>（包括static），这样的函数就是purecode（纯代码）可重入，可以允许有多个该函数的副本在运行，由于它们使用的是分离的栈，所以不会互相干扰</p>
-<p>如果确实需要访问全局变量（包括static），一定要注意实施互斥手段。</p>
-<p>前面的vector的例子就是不可重入的的。</p>
-</li>
+<li><strong>可重入代码</strong><br>如果是一个方法，返回的结果是可以预测的话，只要输入了相同的数据，都能返回相同的结果。那么就是可重入的，当然也是线程安全的</li>
 </ul>
+<blockquote>
+<p>  可重入函数主要用于多任务环境中，一个可重入的函数简单来说就是可以<strong>被中断</strong>的函数，也就是说，可以在这个函数执行的任何时刻中断它，转入OS调度下去执行另外一段代码，而返回控制时不会出现什么错误；而不可重入的函数由于使用了一些<strong>系统资源</strong>，比如全局变量区，中断向量表等，所以它如果被中断的话，可能会出现问题，这类函数是不能运行在多任务环境下的。</p>
+<p>  可重入函数也可以这样理解，重入即表示<strong>重复进入</strong>，首先它意味着这个<strong>函数可以被中断</strong>，其次意味着它<strong>除了使用自己栈上的变量以外不依赖于任何环境</strong>（包括static），这样的函数就是purecode（纯代码）可重入，可以允许有多个该函数的副本在运行，由于它们使用的是分离的栈，所以不会互相干扰</p>
+<p>  如果确实需要访问全局变量（包括static），一定要注意实施互斥手段。</p>
+</blockquote>
+<p>  前面的vector的例子就是不可重入的的。</p>
 <ul>
 <li><strong>线程本地存储</strong><br>如果一段代码必须与另一段代码共享数据，但不希望被多线程共享，那么可以把共享数据限制再一个线程内，比如在java中，一个共享数据要呗多线程访问，可以声明为velotile,如果线程独享，可以使用ThreadLocal类。</li>
 </ul>
@@ -261,6 +262,7 @@
 </li>
 </ul>
 <p>那么synchronized到底是什么，通过javap可以查看到sychronized对应了两条虚拟机指令monitorenter和monitorexit。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/4739169-3a011b72d232ec9c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700" alt="image"></p>
 <p>java虚拟机规范有对它的描述，我就简单概括一下：</p>
 <p><strong>monitorenter</strong></p>
 <ul>
@@ -342,7 +344,7 @@
 <li>tryAcquire（）获取锁的具体实现，根据status变量尝试获取锁，status==0获取成功，获取到锁的线程可以再此获取锁，state递增</li>
 <li>acquireQueued（）获取不到锁进行阻塞</li>
 </ul>
-<p>常见概念：</p>
+<p>常见概念介绍：</p>
 <p><strong>公平锁和非公平锁：</strong></p>
 <p>在公平的锁上，线程按照他们发出请求的顺序获取锁，但在非公平锁上，则允许‘插队’：当一个线程请求非公平锁时，如果在发出请求的同时该锁变成可用状态，那么这个线程会跳过队列中所有的等待线程而获得锁。非公平的ReentrantLock 并不提倡 插队行为，但是无法防止某个线程在合适的时候进行插队。</p>
 <p>非公平锁性能高于公平锁性能的原因：</p>
@@ -351,9 +353,11 @@
 <p>当持有锁的时间相对较长或者请求锁的平均时间间隔较长，应该使用公平锁。在这些情况下，插队带来的吞吐量提升（当锁处于可用状态时，线程却还处于被唤醒的过程中）可能不会出现。</p>
 <p><strong>并发（concurrency）和并行（parallellism）是：</strong></p>
 <p>解释一：并行是指两个或者多个事件在同一时刻发生；而并发是指两个或多个事件在同一时间间隔发生。<br>解释二：并行是在不同实体上的多个事件，并发是在同一实体上的多个事件。<br>解释三：在一台处理器上“同时”处理多个任务，在多台处理器上同时处理多个任务。如hadoop分布式集群<br>所以并发编程的目标是充分的利用处理器的每一个核，以达到最高的处理性能。</p>
-<p><strong> 内核态和用户态 </strong><br>内核态: CPU可以访问内存所有数据, 包括外围设备, 例如硬盘, 网卡. CPU也可以将自己从一个程序切换到另一个程序</p>
+<p><strong>内核态和用户态</strong></p>
+<p>内核态: CPU可以访问内存所有数据, 包括外围设备, 例如硬盘, 网卡. CPU也可以将自己从一个程序切换到另一个程序</p>
 <p>用户态: 只能受限的访问内存, 且不允许访问外围设备. 占用CPU的能力被剥夺, CPU资源可以被其他程序获取</p>
-<h4 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h4><p>由于锁优化是针对synchronized的重量级锁的优化（个人认为），因此放在这里讲解。</p>
+<p>需要深入了解可以看看这篇文章<br><a href="https://www.cnblogs.com/bakari/p/5520860.html" target="_blank" rel="external">https://www.cnblogs.com/bakari/p/5520860.html</a></p>
+<h4 id="三、锁优化"><a href="#三、锁优化" class="headerlink" title="三、锁优化"></a>三、锁优化</h4><p>由于锁优化是针对synchronized的重量级锁的优化（个人认为），因此放在这里讲解。</p>
 <h5 id="自旋锁与自适应自旋锁-JDK1-4-2"><a href="#自旋锁与自适应自旋锁-JDK1-4-2" class="headerlink" title="自旋锁与自适应自旋锁(JDK1.4.2)"></a>自旋锁与自适应自旋锁(JDK1.4.2)</h5><p>目的：提高性能（互斥同步对性能最大的影响是阻塞的实现，挂起线程和回复线程的操作都需要转入内核态进行完成）<br>原理：一般来说，共享数据的锁定只会持续很短的一段时间，为了这段时间去挂机和恢复线程不值得。如果物理机器上有一个以上的处理器，我们可以让后面请求锁的那个线程等待一下，但不放弃处理器的时间（自旋）。不能代替阻塞。</p>
 <p>虚拟机参数：-XX:+UseSpinning(1.6默认开启)</p>
 <p>缺点：</p>
@@ -411,6 +415,12 @@
 </ol>
 <p>结束条件：另一个线程去获取该锁。<br>Mark Word没有被锁定-&gt;未锁定<br>Mark Word被锁定-&gt;轻量级锁定<br><img src="http://images2015.cnblogs.com/blog/820406/201604/820406-20160424163618101-624122079.png" alt="image"></p>
 <p>同样，也不一定总是对程序有利，根据实际情况分析。</p>
+<p>参考资料：</p>
+<p>1.&lt;&lt;深入理解java虚拟机&gt;&gt;</p>
+<p>2.&lt;<java虚拟机规范>&gt;</java虚拟机规范></p>
+<p>3.<a href="http://cmsblogs.com/?p=2071" target="_blank" rel="external">死磕java并发系列</a></p>
+<p>4.<a href="http://blog.csdn.net/endlu/article/details/51249156" target="_blank" rel="external">Lock锁的实现原理</a></p>
+<p>5.忘记了</p>
 
       
 
