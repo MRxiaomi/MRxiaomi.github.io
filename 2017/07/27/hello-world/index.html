@@ -6,18 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Hello World | 刘雨蒙的个人站</title>
+  <title>虚拟机性能监控与故障处理 | 刘雨蒙的个人站</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+  <meta name="description" content="今天学习一下java提供的一些虚拟机分析和监控的工具，帮助我我们程序异常时排查问题 給一个系统定位问题的时候，知识、经验是关键基础，数据是一句，工具是运用知识处理数据的手段。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
+<meta property="og:title" content="虚拟机性能监控与故障处理">
 <meta property="og:url" content="http://yoursite.com/2017/07/27/hello-world/index.html">
 <meta property="og:site_name" content="刘雨蒙的个人站">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
-<meta property="og:updated_time" content="2017-09-03T09:14:58.000Z">
+<meta property="og:description" content="今天学习一下java提供的一些虚拟机分析和监控的工具，帮助我我们程序异常时排查问题 給一个系统定位问题的时候，知识、经验是关键基础，数据是一句，工具是运用知识处理数据的手段。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-c2235bee2ec05376.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-b9934d48ddc784f0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-250269232abb65dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://note.youdao.com/favicon.ico">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/4739169-5640865106a38c49.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-01-28T14:43:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta name="twitter:title" content="虚拟机性能监控与故障处理">
+<meta name="twitter:description" content="今天学习一下java提供的一些虚拟机分析和监控的工具，帮助我我们程序异常时排查问题 給一个系统定位问题的时候，知识、经验是关键基础，数据是一句，工具是运用知识处理数据的手段。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/4739169-c2235bee2ec05376.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="刘雨蒙的个人站" type="application/atom+xml">
   
@@ -164,7 +170,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      虚拟机性能监控与故障处理
     </h1>
   
 
@@ -177,15 +183,116 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.<br><a id="more"></a></p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <p>今天学习一下java提供的一些虚拟机分析和监控的工具，帮助我我们程序异常时排查问题</p>
+<p>給一个系统定位问题的时候，知识、经验是关键基础，数据是一句，工具是运用知识处理数据的手段。</p>
+<a id="more"></a>
+<p>这里的数据包括：运行日志、异常堆栈、GC日志，线程快照、堆转储快照等</p>
+<h2 id="1-jps-虚拟机进程状况工具"><a href="#1-jps-虚拟机进程状况工具" class="headerlink" title="1.jps(虚拟机进程状况工具)"></a>1.jps(虚拟机进程状况工具)</h2><p>列出正在运行的虚拟机进程，虚拟机执行主类名称、本地虚拟机唯一ID.</p>
+<p>格式如下：</p>
+<blockquote>
+<p>jps [ options ] [ hostid ]</p>
+<p>options</p>
+<p>Command-line options.</p>
+</blockquote>
+<p>例如：</p>
+<blockquote>
+<p> ~ jps -l</p>
+<p>643 org.jetbrains.idea.maven.server.RemoteMavenServer<br>1560 sun.tools.jps.Jps<br>1499 org.jetbrains.jps.cmdline.Launcher<br>1500 com.example.demo.SpringbootdemosApplication<br>589</p>
+</blockquote>
+<p>jps可以通过RMI协议，查看开启了RMI服务的远程虚拟机进程状态，hostid为RMI注册表中注册的主机名。</p>
+<p>jps常用选项：</p>
+<ul>
+<li>-q  只输出LVMID(LVMID和系统的PID是一致的),省略主类名称</li>
+<li>-m  输出虚拟机进程启动时传递給主类main函数的参数</li>
+<li>-l  输出主类的全名，如果进程执行的是jar包，输出jar路径</li>
+<li>-v  输出虚拟机启动时的JVM参数</li>
+</ul>
+<h2 id="2-jstat-虚拟机统计信息监视工具"><a href="#2-jstat-虚拟机统计信息监视工具" class="headerlink" title="2.jstat(虚拟机统计信息监视工具)"></a>2.jstat(虚拟机统计信息监视工具)</h2><p>显示本地或远程虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。（没有图形工具的首选）</p>
+<p> <strong>jstat [ generalOption | outputOptions  vmid [ interval [s | ms] [ count ]]]</strong></p>
+<ul>
+<li><strong>generalOption</strong></li>
+</ul>
+<p>一个单一的通用命令行选项（-help，-options或-version）</p>
+<ul>
+<li><strong>outputOptions</strong></li>
+</ul>
+<p>一个或多个输出选项，包含单个statOption以及任何-t，-h和-J选项。</p>
+<ul>
+<li><strong>vmid</strong>(本地跟lvmid一致)</li>
+</ul>
+<p>虚拟机标识符，表示目标Java虚拟机（JVM）的字符串。一般的语法是<br>[ protocol：] [//] lvmid [@ hostname [：port ] / servername ]</p>
+<ul>
+<li><p>interval&amp;count</p>
+<p>查询间隔和次数，如果省略，只查询一次。如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/4739169-c2235bee2ec05376.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+</li>
+</ul>
+<p>option代表希望查询的虚拟机信息，主要分成三类：类装载、垃圾收集和运行期编译状况。</p>
+<p>选项    显示</p>
+<ul>
+<li>-class    监视类装载、卸载数量、总空间以及类装载所耗费的时间</li>
+<li>GC    统计垃圾收集堆的行为。包括Eden区，两个survivor区，老年代、永久代等的容量、已用空间、gc时间合计等信息</li>
+<li>-gccapacity    输出与gc基本相同,主要关注各个区域使用到的最大、最小空间</li>
+<li>-gcutil    输出与gc基本相同,主要关注使用空间占总空间百分比</li>
+<li>-gccause    与-gcutil功能一样，额外输出上一次gc原因</li>
+<li>-gcnew     统计新生代的行为。</li>
+<li>-gcnewcapacity 与gcnew基本相同，    统计新一代及其使用到的最大最小空间。</li>
+<li>-gcold    统计老年代和永久代的行为。</li>
+<li>-gcoldcapacity    与gcnew基本相同，    统计永久代及其使用到的最大最小空间。</li>
+<li>-gcpermcapacity    统计永久代的大小。</li>
+<li>-printcompilation    HotSpot编译方法统计。</li>
+<li>-complier    输出JIT编译过的方法、耗时等信息。</li>
+<li>-printcomplation    输出已经被JIT编译的方法。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4739169-b9934d48ddc784f0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h2 id="3-jinfo（java配置信息工具）"><a href="#3-jinfo（java配置信息工具）" class="headerlink" title="3.jinfo（java配置信息工具）"></a>3.jinfo（java配置信息工具）</h2><p>实时的查看和调整虚拟机参数，jps -v可以查看虚拟机启动时显式指定的参数，如果查看没有被显示指定的参数的话，需要使用：</p>
+<ul>
+<li>jinfo -flag（-sysprops可以打印System.getproperties（）的参数）</li>
+<li>java -XX:PrintFlagsFinal</li>
+</ul>
+<p>设置虚拟机参数：</p>
+<ul>
+<li>jinfo [+|-] name</li>
+<li>jinfo -flag name=value</li>
+</ul>
+<blockquote>
+<p>➜  ~ jinfo -flag PrintGC 585</p>
+<p>-XX:-PrintGC</p>
+<p>➜  ~ jinfo -flag +PrintGC 585</p>
+<p>➜  ~ jinfo -flag PrintGC 585</p>
+<p>-XX:+PrintGC</p>
+</blockquote>
+<p>4.jmap：java内存映像工具</p>
+<p>用于获取java堆转储快照</p>
+<p>除了jmap,还有一些比较暴力的手段：</p>
+<ol>
+<li>-XX:+HeapDumpOnOuntMemoryError参数,出现OOM后自动生成dump文件。</li>
+<li>-XX:+HeapDumpCtrlBreak，使用ctrl+break让虚拟机生成dump文件。<br>3.kill -3命令，发送进程退出信息，“吓唬“虚拟机，也能拿到dump文件。</li>
+</ol>
+<p>jmap的作用除了生成dump文件外，还可以查询finalize执行序列，java堆和永久代的详细信息，如空间使用率，当前使用的是那种收集器等。</p>
+<p>命令格式：<br> jmap [option] vmid</p>
+<ul>
+<li>dump生成java堆的转储快照，格式为-dump:[live],format=b,file=<filename>,其中的live子参数说明是否只dump处存活对象。</filename></li>
+<li>finalizerinfo：显示再F-Quene中等待Finalzer线程执行finalize方法的对象</li>
+<li>heap ，显示java堆详细信息，如使用那种回收器，参数配置，分代状况等。</li>
+<li>histo ，显示堆中对象统计，包括类、实例数量、合集容量</li>
+<li>-permstat 以classLoader为统计口径显示永久带的内存状态</li>
+<li>-F 当虚拟机进程对-dump没有响应时，可以强制生成快照。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/4739169-250269232abb65dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h2 id="jhat：虚拟机堆转存快照分析工具"><a href="#jhat：虚拟机堆转存快照分析工具" class="headerlink" title="jhat：虚拟机堆转存快照分析工具"></a>jhat：虚拟机堆转存快照分析工具</h2><p>与jmap配合使用，用来分析jmap生成的dump文件。</p>
+<p>一般不选择它，因为：<br>1.一版不在生产环境分析，消耗性能，拷贝下来再分析，有更好的选择。<br>2.功能简陋。</p>
+<p><img src="http://note.youdao.com/favicon.ico" alt="image"></p>
+<ol>
+<li>jhat dump.bin</li>
+<li>localhost:7000</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/4739169-5640865106a38c49.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>主要查看途中两点：</p>
+<ol>
+<li>类似jmap -histo,可以查看使用内存最大的对象</li>
+<li>类似sql的OQL,可以对某个对象查询统计</li>
+</ol>
 
       
 
