@@ -6,17 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | 刘雨蒙的个人站</title>
+  <title>刘雨蒙的个人站</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="欢迎来到我的个人站">
-<meta property="og:type" content="website">
+  <meta name="description" content="MySQL MVCC实现原理">
+<meta property="og:type" content="article">
 <meta property="og:title" content="刘雨蒙的个人站">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/08/30/mysql-mvcc/index.html">
 <meta property="og:site_name" content="刘雨蒙的个人站">
-<meta property="og:description" content="欢迎来到我的个人站">
+<meta property="og:description" content="MySQL MVCC实现原理">
+<meta property="og:updated_time" content="2018-08-30T11:04:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="刘雨蒙的个人站">
-<meta name="twitter:description" content="欢迎来到我的个人站">
+<meta name="twitter:description" content="MySQL MVCC实现原理">
   
     <link rel="alternative" href="/atom.xml" title="刘雨蒙的个人站" type="application/atom+xml">
   
@@ -156,263 +157,180 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-mysql-mvcc" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>MySQL MVCC实现原理<br><a id="more"></a></p>
+<h2 id="1-Mysql特点"><a href="#1-Mysql特点" class="headerlink" title="1.Mysql特点"></a>1.Mysql特点</h2><p>可靠、事务、开源。 </p>
+<h2 id="2-MySQL架构"><a href="#2-MySQL架构" class="headerlink" title="2.MySQL架构"></a>2.MySQL架构</h2><ul>
+<li><strong>接入层</strong>，连接通信、权限验证、连接池、线程管理  </li>
+<li><strong>服务层</strong>，sql解析器、sql优化器、数据缓冲、缓存等  </li>
+<li><strong>存储引擎层</strong>，存储机制、索引技巧、锁定水平，增删改查  </li>
+<li><strong>系统文件层</strong>，保存数据、索引、日志</li>
+</ul>
+<h2 id="3-ACID"><a href="#3-ACID" class="headerlink" title="3.ACID"></a>3.ACID</h2><ul>
+<li><strong>原子性</strong>：一个事务的操作要不全部执行，要么全部不执行  </li>
+<li><strong>一致性</strong>：一个事务总是从一个一致性状态转换到另外一个一致性状态  </li>
+<li><strong>隔离性</strong>：一个事务的修改结果什么时候能被其他事务看到。（SQL1992规范中对隔离性定义了不同的隔离级别）  </li>
+<li><strong>持久性</strong>：事务一旦提交，其结果就是永久性的</li>
+</ul>
+<h2 id="4-事务的隔离级别"><a href="#4-事务的隔离级别" class="headerlink" title="4.事务的隔离级别"></a>4.事务的隔离级别</h2><ul>
+<li><strong>读未提交</strong>(Read Uncommitted):可能读取到其他会话中未提交事务修改的数据（脏读）</li>
+<li><strong>读已提交</strong>(Repeatable Read)：只能读取到已经提交的数据（幻读、不可重复读）</li>
+<li><strong>可重复读</strong>(Repeatable Read)：在同一个事务内的查询都和事务开始时刻一致(幻读) —百度百科）</li>
+<li><p><strong>串行读</strong>(Serializable):提供严格的事务隔离。它要求事务序列化执行，事务只能一个接着一个地执行，不能并发执行。仅仅通过“行级锁”是无法实现事务序列化的，必须通过其他机制保证新插入的数据不会被刚执行查询操作的事务访问到。 —百度百科</p>
+<p>==*一般隔离级别越强，并发能力越弱==</p>
+</li>
+</ul>
+<h2 id="5-原生的锁"><a href="#5-原生的锁" class="headerlink" title="5.原生的锁"></a>5.原生的锁</h2><ul>
+<li>缺点：互斥</li>
+<li>数据库场景：读多写少</li>
+</ul>
+<p>==*因此需要读写锁！==</p>
+<h2 id="6-读写锁"><a href="#6-读写锁" class="headerlink" title="6.读写锁"></a>6.读写锁</h2><p>读读不互斥，读写、写写互斥。</p>
+<p>==*能不能让读写不互斥呢？因此有了多版本控制，不同事务session看到自己特定版本的数据。==</p>
+<h2 id="7-innoDB简介"><a href="#7-innoDB简介" class="headerlink" title="7.innoDB简介"></a>7.innoDB简介</h2><p><strong>特点</strong>：行级锁、默认隔离级别为Repeatable Read、实现了MVCC、一致性非锁定读、insert buffer、double write、cluster index。</p>
+<h2 id="8-innoDB的主要日志介绍"><a href="#8-innoDB的主要日志介绍" class="headerlink" title="8.innoDB的主要日志介绍"></a>8.innoDB的主要日志介绍</h2><ul>
+<li><strong>binlog</strong>：服务层生产日志，数据恢复、数据库复制</li>
+<li><p><strong>redo log</strong>：数据在物理层面的修改，断电恢复、保证一致性和持久性，顺序 ：写入数据-&gt;redo log buffer-&gt;file system buffer-&gt;fsync操作-&gt;redo log file -&gt;commit  </p>
+<blockquote>
+<p>为什么要先写入redo log?<br>redo log是顺序读写，远大于随机读写速度。</p>
+</blockquote>
+</li>
+<li><p><strong>undo log</strong>：事务回滚、实现MVCC<br>*bin log 和redo log的一致性，通过两阶段提交：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">InnoDB prepare  （持有prepare_commit_mutex）；</div><div class="line">write/sync Binlog；</div><div class="line">InnoDB commit (写入COMMIT标记后释放prepare_commit_mutex)。</div></pre></td></tr></table></figure>
+<h2 id="9-innoDB索引介绍"><a href="#9-innoDB索引介绍" class="headerlink" title="9.innoDB索引介绍"></a>9.innoDB索引介绍</h2><p><strong>数据结构</strong>：B+tree<br><strong>聚集索引</strong>，主键使用聚集索引，叶子节点保存了具体的数据内容；如果未指定主键，则以第一个非null唯一索引作为聚集索引。若还没有则声称一个隐藏列rowid。<br>==<em>一个表只有一个聚集索引。==<br><em>*辅助索引</em></em>：叶子节点data域存储相应的主键值</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/08/30/mysql-mvcc/" class="archive-article-date">
-  	<time datetime="2018-08-30T10:58:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-30</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/28/mysql-index-principle/" class="archive-article-date">
-  	<time datetime="2018-01-28T05:12:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/28/mysql-index-principle/">索引的实现原理</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/28/spring-aop/" class="archive-article-date">
-  	<time datetime="2018-01-28T05:10:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-28</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/28/a-thread-safety-problem/" class="archive-article-date">
-  	<time datetime="2018-01-28T05:09:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/28/a-thread-safety-problem/">记一次线程安全问题</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/28/datasource-connection--pool/" class="archive-article-date">
-  	<time datetime="2018-01-28T05:06:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/28/datasource-connection--pool/">数据库连接池</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/28/git-commands/" class="archive-article-date">
-  	<time datetime="2018-01-28T05:05:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/28/git-commands/">git常用命令整理</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/28/thread-pool/" class="archive-article-date">
-  	<time datetime="2018-01-28T05:05:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/28/thread-pool/">线程池</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/21/thread-safety/" class="archive-article-date">
-  	<time datetime="2018-01-21T06:17:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/21/thread-safety/">java线程安全的实现</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
       
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/07/27/hello-world/" class="archive-article-date">
-  	<time datetime="2017-07-26T23:17:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-27</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/07/27/hello-world/">虚拟机性能监控与故障处理</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-          
+      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/08/30/mysql-mvcc/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2018/01/28/mysql-index-principle/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">索引的实现原理</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
 
 
           </div>
@@ -435,8 +353,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
